@@ -8,6 +8,8 @@ from agents.outline_builder  import OutlineBuilderAgent
 from agents.blog_writer      import BlogWriterAgent
 from agents.grammar_checker  import GrammarCheckerAgent
 from agents.file_publisher   import FilePublisherAgent
+from utils.youtube import search_video_embed
+
 
 async def pipeline(topic: str):
     kw_bot      = QueryGeneratorAgent("Keywords")
@@ -25,9 +27,12 @@ async def pipeline(topic: str):
     draft   = await write_bot.run(outline=outline["outline"], topic=topic)
     final   = await grammar_bot.run(draft_md=draft["draft_md"])
 
-    # For now we skip YouTube integration—replace placeholder yourself if needed
-    published = file_bot.run(title=topic, markdown=final["final_md"])
+    embed = search_video_embed(topic)
+    final_html = final["final_md"].replace("{{YOUTUBE_LINK}}", embed)
+
+    published = file_bot.run(title=topic, markdown=final_html)
     return published["file_path"]
+
 
 if __name__ == "__main__":
     topic = input("Enter blog topic: ").strip()
