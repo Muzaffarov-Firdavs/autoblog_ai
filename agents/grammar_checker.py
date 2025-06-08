@@ -6,7 +6,7 @@ client = AsyncOpenAI()
 class GrammarCheckerAgent(BaseAgent):
     async def run(self, draft_md: str):
         system = "You are a meticulous proof-reader. Fix grammar, typos, and clarity."
-        user   = draft_md + "\n\nReturn corrected Markdown only."
+        user   = draft_md + "\n\nReturn corrected *plain* Markdown only - no** leading or trailing ``` code fences."
         resp = await client.chat.completions.create(
             model="gpt-4o-mini",
             messages=[{"role":"system","content":system},
