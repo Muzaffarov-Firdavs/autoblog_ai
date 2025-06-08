@@ -4,9 +4,10 @@ from .base import BaseAgent
 client = AsyncOpenAI()
 
 class QueryGeneratorAgent(BaseAgent):
-    async def run(self, topic: str, n: int = 5):
+    async def run(self, topic: str, prompt: str = "", n: int = 5):
         system = "You are an SEO expert. Generate long-tail keywords."
-        user   = f"Topic: {topic}\nReturn {n} comma-separated keywords."
+        user = f"Topic: {topic}\nAdditional context: {prompt}\n" \
+           f"Return {n} comma-separated long-tail keywords."
         resp   = await client.chat.completions.create(
             model="gpt-4o-mini",
             messages=[{"role":"system","content":system},

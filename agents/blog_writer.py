@@ -4,11 +4,11 @@ from .base import BaseAgent
 client = AsyncOpenAI()
 
 class BlogWriterAgent(BaseAgent):
-    async def run(self, outline: str, topic: str):
-        system = ("You are an engaging blog writer. Expand each heading into ≈150 words, "
-                  "use second-person voice, embed '{{YOUTUBE_LINK}}' once where relevant, "
-                  "and keep Markdown.")
-        user = f"Outline:\n{outline}\n\nWrite full post."
+    async def run(self, outline: str, topic: str, prompt: str = ""):
+        system = ("You are an engaging blog writer. Expand each heading (~150 words), "
+                  "use second-person voice, embed '{{YOUTUBE_LINK}}' once, "
+                  "and leave a '{{SOURCE_LINKS}}' placeholder at the end.")
+        user = f"Topic: {topic}\nExtra guidance: {prompt}\nOutline:\n{outline}"
         resp = await client.chat.completions.create(
             model="gpt-4o-mini",
             messages=[{"role":"system","content":system},

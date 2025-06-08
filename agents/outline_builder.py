@@ -4,12 +4,11 @@ from .base import BaseAgent
 client = AsyncOpenAI()
 
 class OutlineBuilderAgent(BaseAgent):
-    async def run(self, bullets: str, topic: str):
+    async def run(self, bullets: str, topic: str, prompt: str = ""):
         system = ("You are a senior content strategist obeying Google E-E-A-T and "
                   "'helpful content' guidelines. Build an H-tag outline.")
-        user = (f"Topic: {topic}\nKey facts:\n{bullets}\n\n"
-                "Return Markdown like:\n"
-                "## H2 title\nBrief sentence\n### H3…\n")
+        user = (f"Topic: {topic}\nExtra instructions: {prompt}\n"
+            f"Key facts:\n{bullets}\n\nReturn an H-tag outline …")
         resp = await client.chat.completions.create(
             model="gpt-4o-mini",
             messages=[{"role":"system","content":system},
